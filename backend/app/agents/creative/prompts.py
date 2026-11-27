@@ -72,11 +72,11 @@ def build_creative_intelligence_prompt(
             lines.append(f"{label}: {value}")
 
     if brief.constraints:
-        lines.append("Constraints:")
+        lines.append("Constraints (must follow):")
         lines.extend(f"- {item}" for item in brief.constraints)
 
     if brief.reference_materials:
-        lines.append("Reference Materials:")
+        lines.append("Reference Materials (context):")
         lines.extend(f"- {item}" for item in brief.reference_materials)
 
     if validation_error:
