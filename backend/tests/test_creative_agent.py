@@ -126,3 +126,26 @@ def test_factory_rejects_unknown_provider() -> None:
     settings = Settings(llm_provider="unknown_vendor")
     with pytest.raises(ProviderConfigError):
         get_llm_provider(settings)
+
+
+def test_agent_rejects_negative_max_retries() -> None:
+    with pytest.raises(ValueError):
+        CreativeIntelligenceAgent(llm_provider=MockLLMProvider(), max_retries=-1)
+
+
+def test_agent_forwards_aspect_ratio_and_language_metadata() -> None:
+    import asyncio
+
+    stub = _StubProvider(["not json"])
+    agent = CreativeIntelligenceAgent(llm_provider=stub, max_retries=0)
+    brief = CreativeBrief(
+        idea="Create a vertical reel for a pottery studio.",
+        aspect_ratio="9:16",
+        language="es",
+    )
+
+    with pytest.raises(AgentOutputValidationError):
+        asyncio.run(agent.run(brief))
+
+    assert stub.calls[0].metadata["aspect_ratio"] == "9:16"
+    assert stub.calls[0].metadata["language"] == "es"

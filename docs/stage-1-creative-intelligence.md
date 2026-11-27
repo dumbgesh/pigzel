@@ -17,11 +17,11 @@ Normalized by `backend/app/ingestion` before reaching the agent:
   - `format` (`ad | social | promo | explainer | short_film | brand_film | custom`)
 - **Optional (with sensible defaults for Simple Mode)**:
   - `target_duration_seconds` (`int | None`, must be `> 0` and `<= 1800` if provided)
-  - `aspect_ratio` (`str`, default `"16:9"`, e.g. `"16:9"`, `"9:16"`, `"1:1"`, `"4:5"`)
+  - `aspect_ratio` (`str`, default `"16:9"`, validated `<width>:<height>` with positive integers such as `"16:9"`, `"9:16"`, `"1:1"`, `"4:5"`)
   - `target_audience` (`str | None`)
   - `tone` (`str | None`)
-  - `constraints` (`list[str]`, default `[]`)
-  - `reference_notes` (`list[str]`, default `[]`)
+  - `constraints` (`list[str]`, default `[]`, deduplicated case-insensitively during ingestion)
+  - `reference_notes` (`list[str]`, default `[]`, deduplicated case-insensitively during ingestion)
   - `reference_asset_uris` (`list[str]`, default `[]`)
 
 ### Reference Material & Context

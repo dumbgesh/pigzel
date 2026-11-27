@@ -72,6 +72,9 @@ def test_full_brief_normalizes_whitespace_and_empty_list_items() -> None:
         {"idea": "Valid idea for a short film.", "desired_duration_seconds": 0},
         {"idea": "Valid idea for a short film.", "desired_duration_seconds": -10},
         {"idea": "Valid idea for a short film.", "video_type": "invalid_format"},
+        {"idea": "Valid idea for a short film.", "aspect_ratio": "wide"},
+        {"idea": "Valid idea for a short film.", "aspect_ratio": "0:9"},
+        {"idea": "Valid idea for a short film.", "aspect_ratio": "16:"},
     ],
 )
 def test_invalid_brief_raises_validation_error(kwargs: dict) -> None:

@@ -45,6 +45,8 @@ class CreativeIntelligenceAgent:
 
         metadata = {
             "video_type": brief.video_type.value,
+            "aspect_ratio": brief.aspect_ratio,
+            "language": brief.language,
             "idea_preview": idea_preview,
         }
         if brief.target_audience:
