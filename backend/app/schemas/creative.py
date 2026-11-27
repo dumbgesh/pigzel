@@ -1,9 +1,12 @@
 """Pydantic v2 schemas for Stage 1 — Creative Intelligence."""
 
 from enum import StrEnum
+import re
 from typing import Annotated
 
 from pydantic import BaseModel, Field, field_validator, model_validator
+
+_ASPECT_RATIO_RE = re.compile(r"^([1-9]\d*):([1-9]\d*)$")
 
 
 def _strip_required(value: str, field_name: str) -> str:
@@ -57,6 +60,13 @@ class CreativeBrief(BaseModel):
     @classmethod
     def validate_required_strings(cls, value: str, info) -> str:
         return _strip_required(value, info.field_name)
+
+    @field_validator("aspect_ratio")
+    @classmethod
+    def validate_aspect_ratio_format(cls, value: str) -> str:
+        if not _ASPECT_RATIO_RE.match(value):
+            raise ValueError("aspect_ratio must be formatted as '<width>:<height>' with positive integers.")
+        return value
 
     @field_validator(
         "project_name",
