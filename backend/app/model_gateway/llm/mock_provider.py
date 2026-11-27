@@ -23,6 +23,8 @@ class MockLLMProvider:
         audience = request.metadata.get("target_audience") or "General digital viewers"
         tone = request.metadata.get("tone_and_style") or "Engaging and clear"
         duration = int(request.metadata.get("desired_duration_seconds") or 45)
+        aspect_ratio = request.metadata.get("aspect_ratio", "16:9")
+        language = request.metadata.get("language", "en")
         idea_preview = request.metadata.get("idea_preview") or "the user's core concept"
 
         payload = {
@@ -128,12 +130,12 @@ class MockLLMProvider:
                     "seconds and deliberate breathing room on the key message."
                 ),
                 "visual_guidelines": (
-                    "Maintain consistent warm-natural color grading, medium-to-close framing for "
-                    "subject connection, and uncluttered compositions."
+                    f"Maintain consistent warm-natural color grading in {aspect_ratio} framing "
+                    "with medium-to-close shots and uncluttered compositions."
                 ),
                 "audio_guidelines": (
-                    "Clear, unhurried voiceover supported by subtle ambient music that swells "
-                    "gently at the resolution."
+                    f"Clear, unhurried voiceover ({language}) supported by subtle ambient music "
+                    "that swells gently at the resolution."
                 ),
                 "production_instructions": [
                     "Establish the core subject and setting within the opening 3 seconds.",
