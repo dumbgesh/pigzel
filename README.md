@@ -1,67 +1,70 @@
-# Pigzel
+# PIGZEL
 
-Open-source, modular AI-powered video production platform.
+**An open-source, modular AI video production platform.**
 
-## Purpose
+Turn ideas into videos through a coordinated workflow of AI agents, creative planning and automated production.
 
-Convert user ideas, instructions, and reference materials into complete videos using a multi-stage AI workflow with human-in-the-loop control.
+> PIGZEL is currently under active development.
 
-Intended for creators, agencies, production studios, social media teams, and developers.
+## Overview
 
-## Current Development Status
+PIGZEL aims to simplify video production by breaking it into three stages:
 
-**Stage: Milestone 2 (Partial) — Stage 1 Creative Intelligence Implemented (Mock Provider)**
+1. **Creative Intelligence** — Understands your idea and develops creative concepts.
+2. **Storyboard Director** — Transforms the selected concept into a structured visual storyboard.
+3. **Production Planner** — Coordinates media generation and assembles the final video.
 
-- **Implemented**: FastAPI backend foundation (`/api/v1/health`, `/api/v1/creative/concepts`), `CreativeBrief` ingestion/validation, `CreativeConcept` / `CreativeDirection` / `CreativeIntelligenceResult` schemas, provider-independent `LLMProvider` gateway with `MockLLMProvider` for local testing, `CreativeIntelligenceAgent`, and `pytest` suite (23 tests passing).
-- **Not Yet Implemented**: Live hosted/local LLM adapters, Stage 1 human approval persistence/orchestrator, Stage 2 (Visual Planning), Stage 3 (Video Production), database/storage persistence, and Next.js frontend.
+Each stage includes human review and approval.
 
-> **Note**: The currently wired `MockLLMProvider` (`is_mock: true`) returns deterministic structured responses for development and testing without API keys—it is not real AI inference.
+## Development Status
 
-## Three-Stage Pipeline (Planned)
+| Component | Status |
+|---|---|
+| Backend foundation | Implemented |
+| Creative Intelligence | Partially implemented |
+| Storyboard Director | Planned |
+| Production Planner | Planned |
+| Frontend | Planned |
+| Media generation | Planned |
 
-Pigzel separates video production into three distinct, human-approved stages:
+The current Creative Intelligence implementation uses a mock LLM provider for development and testing. Live AI model integration is not yet available.
 
-1. **Stage 1 — Creative Intelligence**
-   - Analyze user requirements, instructions, and reference materials.
-   - Generate multiple distinct creative concepts and narratives.
-   - Produce a recommended creative direction with structured production instructions.
-2. **Stage 2 — Visual Planning**
-   - Convert approved creative directions into structured storyboards.
-   - Break narratives into individual scenes with shot types, camera movements, lighting, and environments.
-   - Generate visual references and maintain a consistent visual bible.
-3. **Stage 3 — Video Production**
-   - Plan scene-generation jobs from approved storyboards.
-   - Coordinate image, video, and audio generation providers.
-   - Support independent scene-level regeneration and assemble final video exports.
+## Technology
 
-Human approval is required between major stages.
+- **Backend:** Python, FastAPI, Pydantic
+- **Frontend:** Next.js, TypeScript (planned)
+- **Testing:** Pytest
+- **Video processing:** FFmpeg (planned)
 
-## Planned Capabilities
+## Getting Started
 
-- **Formats**: Advertisements, social media content, promotional videos, explainer videos, short films, brand films, and other creative formats.
-- **Modes**: Simple mode (guided end-to-end) and Advanced mode (granular storyboard and scene control).
-- **Model Strategy**: Open-weight models first, hosted inference APIs, optional local inference, and proprietary fallbacks where justified—all behind a provider-independent model gateway.
-- **Outputs**: Individual scene clips and fully assembled final videos, with versioned creative artifacts.
-- **Design Philosophy**: Modular, model-independent, extensible, schema-validated, and reproducible.
+### Requirements
 
-## Technology Stack
+- Python 3.12+
 
-- **Backend**: Python 3.12+, FastAPI, Pydantic v2, HTTPX, Pytest
-- **Frontend (Planned)**: Next.js, TypeScript
-- **Infrastructure (Planned as needed)**: PostgreSQL, Redis, S3-compatible storage, FFmpeg, Docker
+### Installation
 
-## Repository Structure
+```bash
+git clone https://github.com/dumbgesh/pigzel.git
+cd pigzel/backend
 
-```text
-pigzel/
-├── backend/         # FastAPI application, agents, orchestrator, model gateway, schemas
-├── frontend/        # Next.js + TypeScript web interface (planned)
-├── docs/            # Architecture, PRD, agent specs, model strategy, workflow, roadmap, ADRs
-├── examples/        # Sample project briefs and pipeline examples
-├── scripts/         # Developer and maintenance scripts
-├── .env.example     # Environment variable template
-├── LICENSE          # MIT License
-└── README.md
+pip install -e ".[dev]"
+```
+
+### Run the backend
+
+```bash
+uvicorn app.main:app --reload
+```
+
+The API will be available at:
+
+`http://127.0.0.1:8000`
+
+### Run tests
+
+```bash
+pytest -v
 ```
 
 ## Documentation
@@ -70,66 +73,15 @@ pigzel/
 - [Product Requirements](docs/product-requirements.md)
 - [Data Contracts](docs/data-contracts.md)
 - [Agent Specifications](docs/agent-specifications.md)
-- [Stage 1 Spec — Creative Intelligence](docs/stage-1-creative-intelligence.md)
+- [Development Roadmap](docs/roadmap.md)
 - [Model Strategy](docs/model-strategy.md)
 - [Workflow](docs/workflow.md)
-- [Roadmap](docs/roadmap.md)
-- [Architectural Decisions](docs/decisions.md)
+- [Technical Decisions](docs/decisions.md)
 
-## Getting Started (Contributors)
+## Contributing
 
-1. Ensure **Python 3.12+** is installed.
-2. Copy `.env.example` to `.env` (defaults to `PIGZEL_LLM_PROVIDER=mock` if unset).
-3. Install backend dependencies in editable mode from `backend/`:
-   ```bash
-   cd backend
-   pip install -e ".[dev]"
-   ```
-4. Run the backend API:
-   ```bash
-   cd backend
-   uvicorn app.main:app --reload
-   ```
-   - Health check: `GET http://127.0.0.1:8000/api/v1/health`
-   - Generate concepts: `POST http://127.0.0.1:8000/api/v1/creative/concepts`
-5. Run the test suite (no external API keys required):
-   ```bash
-   cd backend
-   pytest -v
-   ```
-
-### Example Stage 1 Request & Output
-
-**Request (`POST /api/v1/creative/concepts`)**:
-```json
-{
-  "video_type": "explainer",
-  "idea": "Explain how urban vertical farms save water compared to traditional farming.",
-  "target_audience": "Sustainability-minded city residents",
-  "desired_duration_seconds": 45
-}
-```
-
-**Response (`200 OK`, truncated)**:
-```json
-{
-  "concepts": [
-    {
-      "id": "concept_1",
-      "title": "Story-First Explainer",
-      "core_idea": "Ground Explain how urban vertical farms save water compared to traditional farming. in a relatable human moment before revealing the central insight.",
-      "suggested_duration_seconds": 45
-    },
-    { "id": "concept_2", "title": "Visual Metaphor & Kinetic Rhythm" },
-    { "id": "concept_3", "title": "Documentary Micro-Breakdown" }
-  ],
-  "recommended_concept_id": "concept_1",
-  "provider_name": "mock",
-  "model_name": "mock-creative-v1",
-  "is_mock": true
-}
-```
+PIGZEL is an open-source project under active development. Contributions, discussions and suggestions are welcome.
 
 ## License
 
-Released under the [MIT License](LICENSE).
+[MIT License](LICENSE)
