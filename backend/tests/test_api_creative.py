@@ -69,3 +69,28 @@ def test_generate_concepts_endpoint_returns_503_on_provider_failure() -> None:
     )
     assert response.status_code == 503
     assert "Rate limit exceeded" in response.json()["detail"]
+
+
+def test_generate_concepts_endpoint_with_full_brief_and_deduplication() -> None:
+    client = _make_test_client()
+    response = client.post(
+        "/api/v1/creative/concepts",
+        json={
+            "project_name": "Night Bakers",
+            "video_type": "short_film",
+            "idea": "Follow artisan bakers preparing bread before dawn.",
+            "objective": "Showcase craftsmanship",
+            "target_audience": "Food enthusiasts",
+            "platform": "YouTube",
+            "desired_duration_seconds": 90,
+            "aspect_ratio": "16:9",
+            "tone_and_style": "Warm and intimate",
+            "language": "en",
+            "constraints": ["No voiceover", "no voiceover"],
+            "reference_materials": ["Moodboard v1"],
+        },
+    )
+    assert response.status_code == 200
+    body = response.json()
+    assert len(body["concepts"]) == 3
+    assert "16:9" in body["direction"]["visual_guidelines"]
